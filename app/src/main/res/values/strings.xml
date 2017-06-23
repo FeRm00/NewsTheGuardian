@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">News The Guardian</string>
+
+    <!-- Help test to check the design -->
+    <string name="help_article">Here is the tiitle of the article</string>
+    <string name="help_topic">International</string>
+    <string name="help_date">25/02/2017</string>
+    <string name="help_time">15:45</string>
+
+    <!-- Search bar for new topic -->
+    <string name="hintKeyword">Enter a topic</string>
+
+    <!-- Text for the user -->
+    <string name="message_no_internet_connection">No internet connection.</string>
+    <string name="message_no_news">No news found.</string>
+    <string name="message_obtain_data">Obtaining articles, please wait.</string>
+    <string name="message_refresh">Refreshing data, please wait.</string>
+
+    <!-- Settings Menu Item [CHAR LIMIT=NONE] -->
+    <string name="settings_menu_item">Settings</string>
+    <!-- Settings Activity Title [CHAR LIMIT=NONE] -->
+    <string name="settings_title">News Settings</string>
+
+    <!-- Strings For Order-By Preference [CHAR LIMIT=30] -->
+    <string name="settings_order_by_label">Order by:</string>
+    <string name="settings_order_by_key">order-by</string>
+    <string name="settings_order_by_default">@string/settings_order_by_newest_date</string>
+
+    <!-- Label for Order-by newest option -->
+    <string name="settings_order_by_newest_label">Newest</string>
+    <string name="settings_order_by_newest_date" translatable="false">newest</string>
+
+    <!-- Label for Order-by oldest option -->
+    <string name="settings_order_by_oldest_label">Oldest</string>
+    <string name="settings_order_by_oldest_date" translatable="false">oldest</string>
+
+</resources>
