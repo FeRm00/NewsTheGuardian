@@ -5,7 +5,7 @@ package com.kikisnight.newstheguardian;
  * It contains a the magnitude of the earthquake, the location, and the time.
  */
 
-public class News {
+public final class News {
 
     // Keyword "article" used before the variables to differentiate like private variables
     private String articleTitle;

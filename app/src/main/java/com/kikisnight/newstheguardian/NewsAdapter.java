@@ -13,6 +13,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import android.content.pm.PackageManager;
+import android.widget.Toast;
 
 import static com.kikisnight.newstheguardian.NewsActivity.LOG_TAG;
 
@@ -62,10 +64,17 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
 
             // Convert the String Url into a URI object
             Uri newsURI = Uri.parse(articleUrl);
+
             // Create new intent to view the article's URL
             Intent websiteIntent = new Intent(Intent.ACTION_VIEW, newsURI);
-            // Start the intent
-            context.startActivity(websiteIntent);
+            //Check if there is an app installed on the phone, able to handle the event, before launch it
+            if (websiteIntent.resolveActivity(context.getPackageManager()) != null) {
+                // Start the intent
+                context.startActivity(websiteIntent);
+            } else {
+                Toast.makeText(getContext(), "No browser found to open the website.", Toast.LENGTH_SHORT).show();
+            }
+
         }
     }
 
