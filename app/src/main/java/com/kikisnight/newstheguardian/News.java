@@ -1,8 +1,8 @@
 package com.kikisnight.newstheguardian;
 
 /**
- * {@link News} represents the magnitude, location and time for each earthquake
- * It contains a the magnitude of the earthquake, the location, and the time.
+ * {@link News} represents the title, topic and time for each news
+ * It contains a title of the news, the topic, and the time.
  */
 
 public final class News {
@@ -53,7 +53,7 @@ public final class News {
     }
 
     /**
-     * Return the URL of the earthquake.
+     * Return the URL of the news.
      */
     public String getUrl(){
         return articleUrl;

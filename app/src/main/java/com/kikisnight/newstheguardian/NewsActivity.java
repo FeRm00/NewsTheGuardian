@@ -18,16 +18,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.security.AccessController.getContext;
 
 public class NewsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<News>> {
 
@@ -67,6 +62,9 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
     /*String for search a new topic, default "all" */
     private String keyWordforSearch = "all";
 
+    /*Create a new object for mAdapter */
+    public static List<News> articleListNews;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,15 +74,8 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         messageTextView = (TextView) findViewById(R.id.empty_view);
         progressBar = (ProgressBar) findViewById(R.id.loading_indicator);
 
-
-        // Get a reference to the ConnectivityManager to check state of network connectivity
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        // Get details on the currently active default data network
-        networkInfo = connMgr.getActiveNetworkInfo();
-
-        // If there is a network connection, fetch data
-        if (networkInfo != null && networkInfo.isConnected()) {
+        // Check connection
+        if (checkConnection()) {
             // Show message for fetching data
             messageTextView.setText(getString(R.string.message_obtain_data));
 
@@ -94,13 +85,10 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         } else {
             // Hide progressBar
             progressBar.setVisibility(View.GONE);
-
             // Display error
             messageTextView.setText(getString(R.string.message_no_internet_connection));
         }
     }
-
-
 
     @Override
     public Loader<List<News>> onCreateLoader(int id, Bundle args) {
@@ -126,21 +114,29 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> newsItems) {
-        // If there is a valid list of {@link New}s, then add them to the adapter's
-        if (newsItems != null && !newsItems.isEmpty()) {
-            mAdapter.addAll(newsItems);
-            // Hide loading indicator because the data has been loaded
-            progressBar.setVisibility(View.GONE);
-            // Hide message text
-            messageTextView.setText("");
 
+        // If there is a network connection, fetch data
+        if (checkConnection()) {
+            // If there is a valid list of {@link New}s, then add them to the adapter's
+            if (newsItems != null && !newsItems.isEmpty()) {
+                articleListNews.addAll(newsItems);
+                // Hide loading indicator because the data has been loaded
+                progressBar.setVisibility(View.GONE);
+                // Hide message text
+                messageTextView.setText("");
+
+            } else {
+                // Hide loading indicator because the data has been loaded
+                progressBar.setVisibility(View.GONE);
+                // Set message text to display "No articles found!"
+                messageTextView.setText(getString(R.string.message_no_news));
+            }
+            Log.v("MainActivity", "Loader completed.");
         } else {
-            // Hide loading indicator because the data has been loaded
-            progressBar.setVisibility(View.GONE);
-            // Set message text to display "No articles found!"
-            messageTextView.setText(getString(R.string.message_no_news));
+            // Display error
+            messageTextView.setText(getString(R.string.message_no_internet_connection));
+            return;
         }
-        Log.v("MainActivity","Loader completed.");
     }
 
     @Override
@@ -177,12 +173,12 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         // Lookup the recyclerView in activity layout
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         // Create adapter passing the data
-        mAdapter = new NewsAdapter(this, new ArrayList<News>());
+        articleListNews = new ArrayList<News>();
+        mAdapter = new NewsAdapter(this, articleListNews);
         // Attach the adapter to the recyclerView to populate items
         recyclerView.setAdapter(mAdapter);
         // Set layout manager to position the items
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
     }
 
     /*
@@ -195,14 +191,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
         //Change the keyWord for search a new topic
         keyWordforSearch = enterOfKeyword;
 
-        // Get a reference to the ConnectivityManager to check state of network connectivity
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        // Get details on the currently active default data network
-        networkInfo = connMgr.getActiveNetworkInfo();
-        Log.v("MainActivity", "networkInfo: " + networkInfo);
-
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (checkConnection()) {
             // Show message text
             messageTextView.setText(getString(R.string.message_refresh));
             // Show loading indicator
@@ -210,7 +199,7 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
 
             // Check if newsAdapter is not null (which will happen if on launch there was no
             // connection)
-            if (mAdapter != null) {
+            if (articleListNews != null) {
                 // Clear the adapter
                 mAdapter.clearAll();
             }
@@ -226,14 +215,35 @@ public class NewsActivity extends AppCompatActivity implements LoaderManager.Loa
             progressBar.setVisibility(View.GONE);
 
             // Check if newsAdapter is not null (which will happen if on launch there was no connection)
-            if (mAdapter != null) {
+            if (articleListNews != null) {
                 // Clear the adapter
                 mAdapter.clearAll();
             }
 
             // Display error
             messageTextView.setText(getString(R.string.message_no_internet_connection));
-            swipeRefreshLayout.setRefreshing(false);
+            return;
         }
     }
+
+    public boolean checkConnection() {
+
+        boolean checkNetwork;
+
+        // Get a reference to the ConnectivityManager to check state of network connectivity
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        // Get details on the currently active default data network
+        networkInfo = connMgr.getActiveNetworkInfo();
+
+        // If there is a network connection, fetch data
+        if (networkInfo != null && networkInfo.isConnected()) {
+            checkNetwork = true;
+        } else {
+            checkNetwork = false;
+        }
+
+        return checkNetwork;
+    }
+
 }

@@ -2,11 +2,9 @@ package com.kikisnight.newstheguardian;
 
 import android.text.TextUtils;
 import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -133,7 +131,7 @@ public final class QueryUtils {
      */
     private static List<News> extractNews(String newsJSON) {
 
-        // Create an empty ArrayList that we can start adding earthquakes to
+        // Create an empty ArrayList that we can start adding news to
         List<News> news = new ArrayList<>();
 
         // If the JSON string is empty or null, then return early.
@@ -192,7 +190,7 @@ public final class QueryUtils {
             Log.e("QueryUtils", "Problem parsing the news JSON results", e);
         }
 
-        // Return the list of earthquakes
+        // Return the list of news
         return news;
     }
 }
